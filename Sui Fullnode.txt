@@ -1,0 +1,100 @@
+
+Sui Fullnode
+
+0.Update and Install RUST
+
+curl https://sh.rustup.rs -sSf | sh
+source $HOME/.cargo/env
+rustup update stable
+
+1. install these extra dependencies
+    apt-get update \
+    && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y --no-install-recommends \
+    tzdata \
+    git \
+    ca-certificates \
+    curl \
+    build-essential \
+    libssl-dev \
+    pkg-config \
+    libclang-dev \
+    cmake
+2. Set up your fork of the Sui repository:
+Go to the Sui repository on GitHub and click the Fork button in the top right-hand corner of the screen.
+Clone your personal fork of the Sui repository to your local machine (ensure that you insert your GitHub username into the URL):
+
+  $ git clone https://github.com/tunguyen14/sui.git
+    
+3. cd into your sui repository:
+
+  $ cd sui
+
+4. Set up the Sui repository as a git remote:
+
+  $ git remote add upstream https://github.com/MystenLabs/sui
+
+
+5. Sync your fork:
+
+  $ git fetch upstream
+
+6. Check out the devnet branch:
+
+  $ git checkout --track upstream/devnet
+
+7. Make a copy of the fullnode configuration template:
+
+  $ cp crates/sui-config/data/fullnode-template.yaml fullnode.yaml
+
+8. Download the latest genesis 
+
+  $ curl -fLJO https://github.com/MystenLabs/sui-genesis/raw/main/devnet/genesis.blob
+
+9 . Optionally, edit your fullnode.yaml file to reflect any custom paths you employ
+
+mkdir /root/sui_fullnode
+mkdir /root/sui_fullnode/suidb /root/sui_fullnode/genesisdb
+cp /root/sui/fullnode.yaml /root/sui/fullnode.yaml-bak
+cd /root/sui
+sed -i '2,2 s/suidb/\/root\/sui_fullnode\/suidb/g' fullnode.yaml
+sed -i '10,10 s/genesis\.blob/\/root\/sui_fullnode\/genesisdb\/genesis\.blob/g' fullnode.yaml
+mv /root/sui/genesis.blob /root/sui_fullnode/genesisdb/
+
+NẾU BỎ QUA BƯỚC 9 THÌ CHẠY LỆNH NÀY :
+$ cargo run --release --bin sui-node -- --config-path fullnode.yaml
+xong chạy bưới 10 và Run
+
+10. create systemd
+
+sudo tee /etc/systemd/system/sui-fullnode.service > /dev/null <<EOF
+[Unit]
+Description=Sui Fullnode
+After=network.target
+[Service]
+Type=simple
+User=$USER
+WorkingDirectory=/root/sui
+ExecStart=/bin/bash -c '/root/.cargo/bin/cargo run --release --bin sui-node -- --config-path fullnode.yaml'
+Restart=on-failure
+RestartSec=10
+Environment=RUST_BACKTRACE=1
+[Install]
+WantedBy=multi-user.target
+EOF
+######################## Created symlink /etc/systemd/system/multi-user.target.wants/sui-fullnode.service → /etc/systemd/system/sui-fullnode.service.
+11. Run
+ 1. Enable service
+systemctl daemon-reload && systemctl enable sui-fullnode.service
+ 2. Start Sui FullNode
+systemctl start sui-fullnode.service
+ 3. Check log
+journalctl -u sui-fullnode.service -f -o cat 
+
+CHECK node status  :$ service sui-fullnode status
+
+stop   : sudo systemctl stop sui-fullnode
+restar : sudo systemctl restar sui-fullnode
+
+
+
+
