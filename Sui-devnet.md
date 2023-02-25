@@ -1,23 +1,28 @@
-1- install Cargo version 1.60.0 or higher in order to build and install Sui on your machine https://docs.sui.io/build/install
-  $ curl https://sh.rustup.rs/ -sSf | sh
- check cargo version : cargo --version
-
-2- To develop in Sui, you will need the Sui binaries. After installing cargo, run:
+# install Cargo version 1.60.0 or higher in order to build and install Sui on your machine https://docs.sui.io/build/install
+````
+  curl https://sh.rustup.rs/ -sSf | sh
+  cargo --version
+  ````
+# To develop in Sui, you will need the Sui binaries. After installing cargo, run
+````
   cargo install --locked --git https://github.com/MystenLabs/sui.git --branch "devnet" sui
-
-3- Confirm the install with: $ echo $PATH
+````
+# Confirm the install with: $ echo $PATH
    And ensure the .cargo/bin directory appears.
 
-4- Integrated Development Environment , install Analyzer language :
-  $ cargo install --git https://github.com/move-language/move move-analyzer
-
+# Integrated Development Environment , install Analyzer language 
+````
+  cargo install --git https://github.com/move-language/move move-analyzer
+````
    To confirm that you've installed the language server program successfully,
   execute : $ move-analyzer --version , You should see the output :  move-analyzer 0.0.0.
 
-5- download Sui source code :
-  $ git clone https://github.com/MystenLabs/sui.git
+# download Sui source code 
+````
+   git clone https://github.com/MystenLabs/sui.git
+````
+# Create Sui wallet 
 
-6 - Create Sui wallet 
   execute on the command line : $ wallet
 
   The wallet will print the following line if the wallet is starting up the first time :
@@ -55,17 +60,20 @@ switch                Switch active address
 sync                  Synchronize client state with authorities
 transfer-coin         Transfer coin object
 
-7- Genesis
+# Genesis
    check if ~/.sui/sui_config exists → remove it
    initiate genesis: $ sui genesis
 
-8- use the command active-address :$ wallet active-address
+# use the command active-address 
+````
+wallet active-address
+````
+# coppy active-address , join discord Sui faucet coin test
 
-9 - coppy active-address , join discord Sui faucet coin test
-
-10- mint NFT 
-  $ wallet create-example-nft
-
+# mint NFT 
+````
+   wallet create-example-nft
+````
 see output resembling:
 Successfully created an ExampleNFT:
 
